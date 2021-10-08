@@ -3,8 +3,6 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import util.ConfigUtils;
 import util.Connection;
@@ -96,8 +94,9 @@ public class ControllerIndex {
         this.getView().getButtonTestConnection().addActionListener((ActionEvent actionEvent) -> {
             int timeout = 1000;
             try {
-                Socket socket = (new Connection(timeout)).getInstanceSocket();
-                JOptionPane.showMessageDialog(this.getView(), "Conexão OK", "Info", JOptionPane.INFORMATION_MESSAGE);
+                try (Socket socket = (new Connection(timeout)).getInstanceSocket()) {
+                    JOptionPane.showMessageDialog(this.getView(), "Conexão OK", "Info", JOptionPane.INFORMATION_MESSAGE);
+                }
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this.getView(), "Conexão recusada (expirado tempo de espera de " + timeout + " milissegundo(s))", "Erro", JOptionPane.ERROR_MESSAGE);
             }
