@@ -11,6 +11,8 @@ abstract public class Comando {
     
     protected ArrayList<Pessoa> pessoas;
     
+    protected boolean success;
+    
     public Comando() {
         this.pessoas = new ArrayList<>();
     }
@@ -18,5 +20,9 @@ abstract public class Comando {
     protected abstract void execute(Pessoa pessoa);
     
     protected abstract String returnMessage();
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
     
 }
