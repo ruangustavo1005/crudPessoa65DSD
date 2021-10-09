@@ -35,5 +35,10 @@ public class Pessoa {
     public void setEndereco(String endereco) {
         this.endereco = endereco;
     }
-    
+
+    @Override
+    public String toString() {
+        return this.cpf + ";" + this.nome + ";" + this.endereco;
+    }
+     
 }

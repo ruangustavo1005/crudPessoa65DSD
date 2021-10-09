@@ -1,7 +1,6 @@
 package view;
 
 import javax.swing.JButton;
-import javax.swing.JTextField;
 
 public class TelaServer extends javax.swing.JFrame {
     
@@ -23,8 +22,8 @@ public class TelaServer extends javax.swing.JFrame {
         this.txtLogs.setText(this.txtLogs.getText().concat(text + "\n"));
     }
     
-    public JTextField getPortComponent() {
-        return txtPort;
+    public String getPortValue() {
+        return txtPort.getText();
     }
     
     public JButton getStartButton() {

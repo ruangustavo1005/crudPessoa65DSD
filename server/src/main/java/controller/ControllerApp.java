@@ -31,7 +31,7 @@ public class ControllerApp {
     
     private void addActionStart() {
         this.getInstanceView().getStartButton().addActionListener((e) -> {
-            int port = Integer.parseInt(this.getInstanceView().getPortComponent().getText());
+            int port = Integer.parseInt(this.getInstanceView().getPortValue());
             try {
                 this.server.initConnection(port);
             } catch (IOException ex) {

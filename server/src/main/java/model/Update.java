@@ -20,9 +20,6 @@ public class Update extends Comando {
 
     @Override
     protected String returnMessage() {
-        if(Dao.getInstance().getPessoas().isEmpty()) {
-            return "Sem pessoas cadastradas";
-        }
         if(this.success) {
             return "Pessoa atualizada com sucesso";
         } 
