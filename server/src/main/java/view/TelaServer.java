@@ -1,21 +1,15 @@
-package screens;
+package view;
 
-import classes.Server;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import javax.swing.JButton;
+import javax.swing.JTextField;
 
 public class TelaServer extends javax.swing.JFrame {
     
     private static TelaServer instance;
     
-    private Server server;
-
     public TelaServer() {
         initComponents();
         this.txtLogs.setEditable(false);
-        this.server = new Server();
     }
 
     public static TelaServer getInstance() {
@@ -27,6 +21,18 @@ public class TelaServer extends javax.swing.JFrame {
     
     public void addLog(String text) {
         this.txtLogs.setText(this.txtLogs.getText().concat(text + "\n"));
+    }
+    
+    public JTextField getPortComponent() {
+        return txtPort;
+    }
+    
+    public JButton getStartButton() {
+        return btnStart;
+    }
+    
+    public JButton getStopButton() {
+        return btnStop;
     }
 
     /** This method is called from within the constructor to
@@ -41,7 +47,7 @@ public class TelaServer extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtPort = new javax.swing.JTextField();
         btnStart = new javax.swing.JButton();
-        btnstop = new javax.swing.JButton();
+        btnStop = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtLogs = new javax.swing.JTextArea();
 
@@ -51,18 +57,8 @@ public class TelaServer extends javax.swing.JFrame {
         jLabel1.setText("Porta");
 
         btnStart.setText("Start");
-        btnStart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStartActionPerformed(evt);
-            }
-        });
 
-        btnstop.setText("Stop");
-        btnstop.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnstopActionPerformed(evt);
-            }
-        });
+        btnStop.setText("Stop");
 
         txtLogs.setColumns(20);
         txtLogs.setRows(5);
@@ -83,7 +79,7 @@ public class TelaServer extends javax.swing.JFrame {
                         .addGap(27, 27, 27)
                         .addComponent(btnStart)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnstop)))
+                        .addComponent(btnStop)))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -94,7 +90,7 @@ public class TelaServer extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnStart)
-                    .addComponent(btnstop))
+                    .addComponent(btnStop))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(25, Short.MAX_VALUE))
@@ -104,24 +100,9 @@ public class TelaServer extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        int port = Integer.parseInt(this.txtPort.getText());
-        try {
-            this.server.initConnection(port);
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
-        } catch (Exception ex) {
-            Logger.getLogger(TelaServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnStartActionPerformed
-
-    private void btnstopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnstopActionPerformed
-        this.server.interrupt();
-    }//GEN-LAST:event_btnstopActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStart;
-    private javax.swing.JButton btnstop;
+    private javax.swing.JButton btnStop;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtLogs;
