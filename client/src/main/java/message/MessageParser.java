@@ -7,18 +7,18 @@ import java.util.List;
 /**
  * @author Ruan
  */
-abstract public class MessageParser<T extends Transmissible> {
+abstract public class MessageParser<Type extends Transmissible> {
 
     public static final String SEPARATOR = ";";
     
     private final ArrayList<String> conteudo;
-    private final T entity;
+    private final Type entity;
     
     abstract protected String getOperationDescription();
 
     abstract protected List<String> getEspecificInfo();
 
-    public MessageParser(T entity) {
+    public MessageParser(Type entity) {
         this.entity = entity;
         this.conteudo = new ArrayList<>();
         this.conteudo.addAll(this.getEspecificInfo());
@@ -30,7 +30,11 @@ abstract public class MessageParser<T extends Transmissible> {
         });
     }
 
-    public T getEntity() {
+    public byte[] getMessageBytes() {
+        return this.getMessage().getBytes();
+    }
+    
+    public Type getEntity() {
         return entity;
     }
     

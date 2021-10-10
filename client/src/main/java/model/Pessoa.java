@@ -27,24 +27,27 @@ public class Pessoa implements Transmissible {
         return cpf;
     }
 
-    public void setCpf(String cpf) {
+    public Pessoa setCpf(String cpf) {
         this.cpf = cpf;
+        return this;
     }
 
     public String getNome() {
         return nome;
     }
 
-    public void setNome(String nome) {
+    public Pessoa setNome(String nome) {
         this.nome = nome;
+        return this;
     }
 
     public String getEndereco() {
         return endereco;
     }
 
-    public void setEndereco(String endereco) {
+    public Pessoa setEndereco(String endereco) {
         this.endereco = endereco;
+        return this;
     }
 
     @Override

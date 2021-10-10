@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.JButton;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 
 /**
@@ -20,7 +21,7 @@ public class ViewIndex extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        table = new javax.swing.JTable();
         buttonSaveIP = new javax.swing.JButton();
         fieldIP = new javax.swing.JTextField();
         fieldPort = new javax.swing.JTextField();
@@ -37,10 +38,10 @@ public class ViewIndex extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gerenciador de Pessoas");
 
-        jTable1.setModel(this.getTableModelPessoa());
-        jScrollPane1.setViewportView(jTable1);
+        table.setModel(this.getTableModelPessoa());
+        jScrollPane1.setViewportView(table);
 
-        buttonSaveIP.setText("Salvar IP/Porta");
+        buttonSaveIP.setText("Aplicar IP/Porta");
 
         jLabel1.setText("IP:");
 
@@ -76,7 +77,7 @@ public class ViewIndex extends javax.swing.JFrame {
                 .addComponent(buttonGet)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonList)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -88,7 +89,7 @@ public class ViewIndex extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(fieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(fieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(buttonSaveIP)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -126,6 +127,10 @@ public class ViewIndex extends javax.swing.JFrame {
 
     public TableModelPessoa getTableModelPessoa() {
         return tableModelPessoa;
+    }
+
+    public JTable getTable() {
+        return table;
     }
 
     public JButton getButtonDelete() {
@@ -178,6 +183,6 @@ public class ViewIndex extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }

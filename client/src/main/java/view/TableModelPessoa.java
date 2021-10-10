@@ -47,4 +47,8 @@ public class TableModelPessoa extends AbstractTableModel {
         return "";
     }
 
+    public List<Pessoa> getData() {
+        return data;
+    }
+
 }
