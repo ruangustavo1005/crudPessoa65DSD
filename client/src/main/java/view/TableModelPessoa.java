@@ -51,4 +51,28 @@ public class TableModelPessoa extends AbstractTableModel {
         return data;
     }
 
+    public void addData(Pessoa pessoa) {
+        this.getData().add(pessoa);
+        int i = this.getData().indexOf(pessoa);
+        this.fireTableRowsInserted(i, i);
+    }
+
+    public void clearData() {
+        int i = this.getData().size();
+        this.data = new ArrayList<>();
+        this.fireTableRowsDeleted(0, i);
+    }
+    
+    public void deleteData(Pessoa pessoa) {
+        int i = this.getData().indexOf(pessoa);
+        this.getData().remove(pessoa);
+        this.fireTableRowsDeleted(i, i);
+    }
+    
+    public void updateData(int i, Pessoa pessoa) {
+        this.getData().remove(i);
+        this.getData().add(i, pessoa);
+        this.fireTableRowsDeleted(i, i);
+    }
+    
 }

@@ -18,10 +18,16 @@ abstract public class MessageParser<Type extends Transmissible> {
 
     abstract protected List<String> getEspecificInfo();
 
+    public MessageParser() {
+        this(null);
+    }
+    
     public MessageParser(Type entity) {
         this.entity = entity;
         this.conteudo = new ArrayList<>();
-        this.conteudo.addAll(this.getEspecificInfo());
+        if (this.entity != null) {
+            this.conteudo.addAll(this.getEspecificInfo());
+        }
     }
     
     public String getMessage() {

@@ -21,6 +21,7 @@ public class ConfigUtils {
         try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
             bufferedWriter.write(config);
         }
+        ConfigUtils.config = config;
     }
     
     static public String getConfig() throws IOException {
@@ -35,7 +36,7 @@ public class ConfigUtils {
         FileInputStream fileInputStream = new FileInputStream(configFile);
         InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
         try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
-            config = bufferedReader.readLine();
+            ConfigUtils.config = bufferedReader.readLine();
         }
     }
     

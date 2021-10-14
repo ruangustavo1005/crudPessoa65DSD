@@ -51,6 +51,11 @@ public class Pessoa implements Transmissible {
     }
 
     @Override
+    public String toString() {
+        return "Pessoa{" + "cpf=" + cpf + ", nome=" + nome + ", endereco=" + endereco + '}';
+    }
+
+    @Override
     public List<String> getInfoInsert() {
         List<String> info = new ArrayList<>();
         info.add(this.getCpf());
