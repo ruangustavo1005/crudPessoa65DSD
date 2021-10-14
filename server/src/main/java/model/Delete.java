@@ -9,6 +9,7 @@ public class Delete extends Comando {
             if(pessoa.getCpf().equals(p.getCpf())) {
                 this.success = true;
                 Dao.getInstance().getPessoas().remove(p);
+                break;
             }
         }
     }

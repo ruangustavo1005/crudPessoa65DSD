@@ -27,6 +27,7 @@ public class ControllerApp {
     private void addActionListeners() {
         this.addActionStart();
         this.addActionStop();
+        this.addActionClearLogs();
     }
     
     private void addActionStart() {
@@ -45,6 +46,12 @@ public class ControllerApp {
     private void addActionStop() {
         this.getInstanceView().getStopButton().addActionListener((e) -> {
             this.server.interrupt();
+        });
+    }
+    
+    private void addActionClearLogs() {
+        this.getInstanceView().getClearButton().addActionListener((e) -> {
+            getInstanceView().clearLogs();
         });
     }
     

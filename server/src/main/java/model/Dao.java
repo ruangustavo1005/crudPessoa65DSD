@@ -10,6 +10,8 @@ public class Dao {
     
     public Dao() {
         this.pessoas = new ArrayList<>();
+        this.pessoas.add(new Pessoa("teste", "123", "casa"));
+        this.pessoas.add(new Pessoa("testa", "456", "casa 2"));
     }
 
     public static Dao getInstance() {
