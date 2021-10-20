@@ -13,7 +13,7 @@ public class TableModelPessoa extends AbstractTableModel {
     private List<Pessoa> data;
 
     public TableModelPessoa() {
-        this.data = new ArrayList<Pessoa>();
+        this.data = new ArrayList<>();
     }
     
     @Override

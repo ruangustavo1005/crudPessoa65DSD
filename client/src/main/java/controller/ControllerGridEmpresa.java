@@ -4,58 +4,37 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import message.DeleteMessageParser;
 import message.GetMessageParser;
 import message.ListMessageParser;
 import message.MessageParser;
-import model.Pessoa;
-import util.ConfigUtils;
+import model.Empresa;
 import util.Connection;
+import util.DateUtils;
 import util.MessageDialog;
 import util.Response;
-import view.ViewIndex;
+import view.ViewGridEmpresa;
 
 /**
  * @author Ruan
  */
-public class ControllerIndex extends Controller {
+public class ControllerGridEmpresa extends Controller {
 
-    private ViewIndex view;
-
-    public ControllerIndex() {
-        this(null);
-    }
+    private ViewGridEmpresa view;
     
-    public ControllerIndex(Controller caller) {
+    public ControllerGridEmpresa(Controller caller) {
         super(caller);
-        this.view = new ViewIndex();
         this.addActionListeners();
         this.addTableListeners();
         this.onSelectRow();
     }
     
     public void abreTela() {
-        this.setIPPortFromConfig();
         this.getView().setVisible(true);
     }
 
-    private void setIPPortFromConfig() {
-        try {
-            String config = ConfigUtils.getConfig();
-            
-            if (config != null && !config.isEmpty()) {
-                String[] configs = config.split(":");
-                this.getView().getFieldIP().setText(configs[0]);
-                this.getView().getFieldPort().setText(configs[1]);
-            }
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this.getView(), "Não foi possível ler o arquivo de configurações", "Erro", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    
-    public ViewIndex getView() {
+    public ViewGridEmpresa getView() {
         return view;
     }
     
@@ -65,9 +44,6 @@ public class ControllerIndex extends Controller {
         this.addActionListenerDelete();
         this.addActionListenerGet();
         this.addActionListenerList();
-        this.addActionListenerSaveIP();
-        this.addActionListenerTestConnection();
-        this.addActionListenerGerenciarEmpresas();
     }
     
     private void addTableListeners() {
@@ -85,26 +61,26 @@ public class ControllerIndex extends Controller {
     
     private void addActionListenerInsert() {
         this.getView().getButtonInsert().addActionListener((ActionEvent actionEvent) -> {
-            (new ControllerFormPessoa(this)).abreTela();
+            (new ControllerFormEmpresa(this)).abreTela();
         });
     }
     
     private void addActionListenerUpdate() {
         this.getView().getButtonUpdate().addActionListener((ActionEvent actionEvent) -> {
-            (new ControllerFormPessoa(this, this.getSelectedModel())).abreTela();
+            (new ControllerFormEmpresa(this, this.getSelectedModel())).abreTela();
         });
     }
     
     private void addActionListenerDelete() {
         this.getView().getButtonDelete().addActionListener((ActionEvent actionEvent) -> {
-            Pessoa pessoa = this.getSelectedModel();
+            Empresa empresa = this.getSelectedModel();
             
             Response retorno = this.delete();
             
             MessageDialog.show(this.getView(), retorno);
             
             if (retorno.isSuccess()) {
-                this.getView().getTableModelPessoa().deleteData(pessoa);
+                this.getView().getTableModelEmpresa().deleteData(empresa);
             }
         });
     }
@@ -115,7 +91,7 @@ public class ControllerIndex extends Controller {
             
             if (retorno.isSuccess()) {
                 String[] dados = retorno.getMessage().split(";");
-                (new ControllerFormPessoa(this, new Pessoa(dados[0], dados[1], dados[2]), true)).abreTela();
+                (new ControllerFormEmpresa(this, new Empresa(dados[0], dados[1], DateUtils.stringToDate(dados[2])), true)).abreTela();
             }
             else {
                 MessageDialog.show(this.getView(), retorno);
@@ -128,7 +104,7 @@ public class ControllerIndex extends Controller {
             Response retorno = this.list();
             
             if (retorno.isSuccess()) {
-                this.getView().getTableModelPessoa().clearData();
+                this.getView().getTableModelEmpresa().clearData();
                 
                 String[] lines = retorno.getMessage().split("\n");
                 
@@ -136,7 +112,7 @@ public class ControllerIndex extends Controller {
                 if (quantidade > 0) {
                     for (int i = 1; i < lines.length; i++) {
                         String[] dados = lines[i].split(";");
-                        this.getView().getTableModelPessoa().addData(new Pessoa(dados[0], dados[1], dados[2]));
+                        this.getView().getTableModelEmpresa().addData(new Empresa(dados[0], dados[1], DateUtils.stringToDate(dados[2])));
                     }
                 }
             }
@@ -146,42 +122,10 @@ public class ControllerIndex extends Controller {
         });
     }
     
-    private void addActionListenerSaveIP() {
-        this.getView().getButtonSaveIP().addActionListener((ActionEvent actionEvent) -> {
-            try {
-                String ip = this.getView().getFieldIP().getText();
-                String port = this.getView().getFieldPort().getText();
-                
-                ConfigUtils.setConfig(ip.concat(":").concat(port));
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this.getView(), "Não foi possível ler o arquivo de configurações", "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-    }
-    
-    private void addActionListenerTestConnection() {
-        this.getView().getButtonTestConnection().addActionListener((ActionEvent actionEvent) -> {
-            int timeout = 5000;
-            try {
-                try (Socket socket = (new Connection(timeout)).getInstanceSocket()) {
-                    JOptionPane.showMessageDialog(this.getView(), "Conexão OK", "Info", JOptionPane.INFORMATION_MESSAGE);
-                }
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this.getView(), "Conexão recusada (expirado tempo de espera de " + timeout + " milissegundo(s))", "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-    }
-
-    private void addActionListenerGerenciarEmpresas() {
-        this.getView().getButtonGerenciarEmpresas().addActionListener((ActionEvent actionEvent) -> {
-            
-        });
-    }
-    
-    private Pessoa getSelectedModel() {
-        Pessoa retorno = null;
+    private Empresa getSelectedModel() {
+        Empresa retorno = null;
         if (this.getView().getTable().getSelectedRowCount() == 1) {
-            retorno = this.getView().getTableModelPessoa().getData().get(this.getView().getTable().getSelectedRow());
+            retorno = this.getView().getTableModelEmpresa().getData().get(this.getView().getTable().getSelectedRow());
         }
         return retorno;
     }
@@ -191,7 +135,7 @@ public class ControllerIndex extends Controller {
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
-            MessageParser<Pessoa> messageParser = new DeleteMessageParser<>(this.getSelectedModel());
+            MessageParser<Empresa> messageParser = new DeleteMessageParser<>(this.getSelectedModel());
             socket.getOutputStream().write(messageParser.getMessageBytes());
             
             InputStream inputStream = socket.getInputStream();
@@ -209,7 +153,7 @@ public class ControllerIndex extends Controller {
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
-            MessageParser<Pessoa> messageParser = new GetMessageParser<>(this.getSelectedModel());
+            MessageParser<Empresa> messageParser = new GetMessageParser<>(this.getSelectedModel());
             socket.getOutputStream().write(messageParser.getMessageBytes());
             
             InputStream inputStream = socket.getInputStream();
@@ -228,7 +172,7 @@ public class ControllerIndex extends Controller {
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
-            MessageParser<Pessoa> messageParser = new ListMessageParser<>(Pessoa.class);
+            MessageParser<Empresa> messageParser = new ListMessageParser<>(Empresa.class);
             socket.getOutputStream().write(messageParser.getMessageBytes());
             
             InputStream inputStream = socket.getInputStream();
@@ -250,5 +194,5 @@ public class ControllerIndex extends Controller {
         }
         return retorno;
     }
-    
+
 }

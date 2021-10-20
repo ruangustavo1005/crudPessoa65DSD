@@ -30,8 +30,12 @@ abstract public class MessageParser<Type extends Transmissible> {
         }
     }
     
+    protected String getOperationDescriptionWithIdentificator() {
+        return this.entity.getClass().getSimpleName().concat(SEPARATOR).concat(this.getOperationDescription());
+    }
+    
     public String getMessage() {
-        return this.getConteudo().stream().reduce(this.getOperationDescription(), (String content1, String content2) -> {
+        return this.getConteudo().stream().reduce(this.getOperationDescriptionWithIdentificator(), (String content1, String content2) -> {
             return content1.concat(MessageParser.SEPARATOR).concat(content2);
         });
     }

@@ -13,8 +13,8 @@ public class ListMessageParser<T extends Transmissible> extends MessageParser<T>
         super(entity);
     }
     
-    public ListMessageParser() {
-        super();
+    public ListMessageParser(Class<T> clazz) throws InstantiationException, IllegalAccessException {
+        super(clazz.newInstance());
     }
     
     @Override
