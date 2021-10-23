@@ -4,12 +4,16 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import javax.swing.event.ListSelectionEvent;
 import message.DeleteMessageParser;
 import message.GetMessageParser;
 import message.ListMessageParser;
 import message.MessageParser;
 import model.Empresa;
+import model.Pessoa;
 import util.Connection;
 import util.DateUtils;
 import util.MessageDialog;
@@ -25,6 +29,7 @@ public class ControllerGridEmpresa extends Controller {
     
     public ControllerGridEmpresa(Controller caller) {
         super(caller);
+        this.view = new ViewGridEmpresa();
         this.addActionListeners();
         this.addTableListeners();
         this.onSelectRow();
@@ -87,11 +92,10 @@ public class ControllerGridEmpresa extends Controller {
     
     private void addActionListenerGet() {
         this.getView().getButtonGet().addActionListener((ActionEvent actionEvent) -> {
-            Response retorno = this.get();
+            Response<Empresa> retorno = this.get();
             
             if (retorno.isSuccess()) {
-                String[] dados = retorno.getMessage().split(";");
-                (new ControllerFormEmpresa(this, new Empresa(dados[0], dados[1], DateUtils.stringToDate(dados[2])), true)).abreTela();
+                (new ControllerFormEmpresa(this, retorno.getTransmissible(), true)).abreTela();
             }
             else {
                 MessageDialog.show(this.getView(), retorno);
@@ -101,19 +105,13 @@ public class ControllerGridEmpresa extends Controller {
     
     private void addActionListenerList() {
         this.getView().getButtonList().addActionListener((ActionEvent actionEvent) -> {
-            Response retorno = this.list();
+            Response<Empresa> retorno = this.list();
             
             if (retorno.isSuccess()) {
                 this.getView().getTableModelEmpresa().clearData();
                 
-                String[] lines = retorno.getMessage().split("\n");
-                
-                int quantidade = Integer.valueOf(lines[0]);
-                if (quantidade > 0) {
-                    for (int i = 1; i < lines.length; i++) {
-                        String[] dados = lines[i].split(";");
-                        this.getView().getTableModelEmpresa().addData(new Empresa(dados[0], dados[1], DateUtils.stringToDate(dados[2])));
-                    }
+                for (Empresa empresa : retorno.getTransmissibles()) {
+                    this.getView().getTableModelEmpresa().addData(empresa);
                 }
             }
             else {
@@ -148,8 +146,8 @@ public class ControllerGridEmpresa extends Controller {
         return retorno;
     }
     
-    private Response get() {
-        Response retorno;
+    private Response<Empresa> get() {
+        Response<Empresa> retorno;
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
@@ -159,7 +157,24 @@ public class ControllerGridEmpresa extends Controller {
             InputStream inputStream = socket.getInputStream();
             byte[] dadosBrutos = new byte[1024];
             String response = new String(dadosBrutos, 0, inputStream.read(dadosBrutos));
-            retorno = new Response(response.split(";").length == 3, response);
+            retorno = new Response(response.split(";").length == 4, response);
+            
+            String[] dados = retorno.getMessage().split(";");
+            Empresa empresa = new Empresa(dados[0], dados[1], DateUtils.stringToDate(dados[2]));
+
+            if (dados.length == 4) {
+                ArrayList<String> cpfPessoasRelacionadas = new ArrayList<>(Arrays.asList(dados[3].split(",")));
+                for (Pessoa pessoa : ControllerIndex.list().getTransmissibles()) {
+                    if (cpfPessoasRelacionadas.contains(pessoa.getCpf())) {
+                        empresa.addPessoa(pessoa);
+                        cpfPessoasRelacionadas.remove(pessoa.getCpf());
+                        if (cpfPessoasRelacionadas.size() <= 0) {
+                            break;
+                        }
+                    }
+                }
+            }
+            retorno.setTransmissible(empresa);
         }
         catch (IOException ex) {
             retorno = new Response(false, "Houve um erro ao tentar conectar com o servidor");
@@ -167,8 +182,8 @@ public class ControllerGridEmpresa extends Controller {
         return retorno;
     }
     
-    private Response list() {
-        Response retorno;
+    private Response<Empresa> list() {
+        Response<Empresa> retorno;
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
@@ -186,6 +201,28 @@ public class ControllerGridEmpresa extends Controller {
             }
             
             retorno = new Response(true, dados);
+            
+            ArrayList<Pessoa> allPessoas = ControllerIndex.list().getTransmissibles();
+            String[] lines = retorno.getMessage().split("\n");
+            
+            int quantidade = Integer.valueOf(lines[0]);
+            if (quantidade > 0) {
+                for (int i = 1; i < lines.length; i++) {
+                    String[] dadosEmpresa = lines[i].split(";");
+                    
+                    Empresa empresa = new Empresa(dadosEmpresa[0], dadosEmpresa[1], DateUtils.stringToDate(dadosEmpresa[2]));
+                    retorno.addTransmissible(empresa);
+                    
+                    if (dadosEmpresa.length == 4) {
+                        ArrayList<String> cpfPessoasRelacionadas = new ArrayList<>(Arrays.asList(dadosEmpresa[3].split(",")));
+                        for (Pessoa pessoa : allPessoas) {
+                            if (cpfPessoasRelacionadas.contains(pessoa.getCpf())) {
+                                empresa.addPessoa(pessoa);
+                            }
+                        }
+                    }
+                }
+            }
         }
         catch (IOException ex) {
             retorno = new Response(false, "Houve um erro ao tentar conectar com o servidor");

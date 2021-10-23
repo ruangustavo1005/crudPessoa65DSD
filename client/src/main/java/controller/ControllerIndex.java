@@ -111,11 +111,10 @@ public class ControllerIndex extends Controller {
     
     private void addActionListenerGet() {
         this.getView().getButtonGet().addActionListener((ActionEvent actionEvent) -> {
-            Response retorno = this.get();
+            Response<Pessoa> retorno = this.get();
             
             if (retorno.isSuccess()) {
-                String[] dados = retorno.getMessage().split(";");
-                (new ControllerFormPessoa(this, new Pessoa(dados[0], dados[1], dados[2]), true)).abreTela();
+                (new ControllerFormPessoa(this, retorno.getTransmissible(), true)).abreTela();
             }
             else {
                 MessageDialog.show(this.getView(), retorno);
@@ -125,19 +124,13 @@ public class ControllerIndex extends Controller {
     
     private void addActionListenerList() {
         this.getView().getButtonList().addActionListener((ActionEvent actionEvent) -> {
-            Response retorno = this.list();
+            Response<Pessoa> retorno = ControllerIndex.list();
             
             if (retorno.isSuccess()) {
                 this.getView().getTableModelPessoa().clearData();
                 
-                String[] lines = retorno.getMessage().split("\n");
-                
-                int quantidade = Integer.valueOf(lines[0]);
-                if (quantidade > 0) {
-                    for (int i = 1; i < lines.length; i++) {
-                        String[] dados = lines[i].split(";");
-                        this.getView().getTableModelPessoa().addData(new Pessoa(dados[0], dados[1], dados[2]));
-                    }
+                for (Pessoa pessoa : retorno.getTransmissibles()) {
+                    this.getView().getTableModelPessoa().addData(pessoa);
                 }
             }
             else {
@@ -174,7 +167,7 @@ public class ControllerIndex extends Controller {
 
     private void addActionListenerGerenciarEmpresas() {
         this.getView().getButtonGerenciarEmpresas().addActionListener((ActionEvent actionEvent) -> {
-            
+            (new ControllerGridEmpresa(this)).abreTela();
         });
     }
     
@@ -204,8 +197,8 @@ public class ControllerIndex extends Controller {
         return retorno;
     }
     
-    private Response get() {
-        Response retorno;
+    private Response<Pessoa> get() {
+        Response<Pessoa> retorno;
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
@@ -216,6 +209,10 @@ public class ControllerIndex extends Controller {
             byte[] dadosBrutos = new byte[1024];
             String response = new String(dadosBrutos, 0, inputStream.read(dadosBrutos));
             retorno = new Response(response.split(";").length == 3, response);
+            if (retorno.isSuccess()) {
+                String[] dados = retorno.getMessage().split(";");
+                retorno.setTransmissible(new Pessoa(dados[0], dados[1], dados[2]));
+            }
         }
         catch (IOException ex) {
             retorno = new Response(false, "Houve um erro ao tentar conectar com o servidor");
@@ -223,8 +220,8 @@ public class ControllerIndex extends Controller {
         return retorno;
     }
     
-    private Response list() {
-        Response retorno;
+    public static Response<Pessoa> list() {
+        Response<Pessoa> retorno;
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
@@ -242,6 +239,16 @@ public class ControllerIndex extends Controller {
             }
             
             retorno = new Response(true, dados);
+            
+            String[] lines = retorno.getMessage().split("\n");
+
+            int quantidade = Integer.valueOf(lines[0]);
+            if (quantidade > 0) {
+                for (int i = 1; i < lines.length; i++) {
+                    String[] dadosPessoa = lines[i].split(";");
+                    retorno.addTransmissible(new Pessoa(dadosPessoa[0], dadosPessoa[1], dadosPessoa[2]));
+                }
+            }
         }
         catch (IOException ex) {
             retorno = new Response(false, "Houve um erro ao tentar conectar com o servidor");

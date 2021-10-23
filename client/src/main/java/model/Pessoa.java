@@ -52,7 +52,7 @@ public class Pessoa implements Transmissible {
 
     @Override
     public String toString() {
-        return "Pessoa{" + "cpf=" + cpf + ", nome=" + nome + ", endereco=" + endereco + '}';
+        return this.getCpf().concat(" - ").concat(this.getNome());
     }
 
     @Override

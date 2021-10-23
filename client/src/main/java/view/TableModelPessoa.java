@@ -1,7 +1,6 @@
 package view;
 
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import model.Pessoa;
 
@@ -10,7 +9,7 @@ import model.Pessoa;
  */
 public class TableModelPessoa extends AbstractTableModel {
 
-    private List<Pessoa> data;
+    private ArrayList<Pessoa> data;
 
     public TableModelPessoa() {
         this.data = new ArrayList<>();
@@ -47,7 +46,7 @@ public class TableModelPessoa extends AbstractTableModel {
         return "";
     }
 
-    public List<Pessoa> getData() {
+    public ArrayList<Pessoa> getData() {
         return data;
     }
 

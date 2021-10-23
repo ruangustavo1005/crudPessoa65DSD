@@ -17,7 +17,7 @@ public class Empresa implements Transmissible {
     private ArrayList<Pessoa> pessoas;
 
     public Empresa() {
-        
+        this(null, null, null, new ArrayList<>());
     }
 
     public Empresa(String cnpj, String razao, Date dataCriacao) {
@@ -73,7 +73,7 @@ public class Empresa implements Transmissible {
     }
 
     public String getDataCriacaoAsString() {
-        return DateUtils.dateToString(this.getDataCriacao());
+        return this.getDataCriacao() != null ? DateUtils.dateToString(this.getDataCriacao()) : null;
     }
     
     public String getPessoasAsString() {
