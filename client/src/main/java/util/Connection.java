@@ -9,7 +9,7 @@ import java.net.Socket;
  */
 public class Connection {
 
-    private int timeout;
+    private int timeout = 3000;
 
     public Connection() {
         

@@ -1,7 +1,6 @@
 package view;
 
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import model.Pessoa;
 
@@ -10,10 +9,10 @@ import model.Pessoa;
  */
 public class TableModelPessoa extends AbstractTableModel {
 
-    private List<Pessoa> data;
+    private ArrayList<Pessoa> data;
 
     public TableModelPessoa() {
-        this.data = new ArrayList<Pessoa>();
+        this.data = new ArrayList<>();
     }
     
     @Override
@@ -47,8 +46,32 @@ public class TableModelPessoa extends AbstractTableModel {
         return "";
     }
 
-    public List<Pessoa> getData() {
+    public ArrayList<Pessoa> getData() {
         return data;
     }
 
+    public void addData(Pessoa pessoa) {
+        this.getData().add(pessoa);
+        int i = this.getData().indexOf(pessoa);
+        this.fireTableRowsInserted(i, i);
+    }
+
+    public void clearData() {
+        int i = this.getData().size();
+        this.data = new ArrayList<>();
+        this.fireTableRowsDeleted(0, i);
+    }
+    
+    public void deleteData(Pessoa pessoa) {
+        int i = this.getData().indexOf(pessoa);
+        this.getData().remove(pessoa);
+        this.fireTableRowsDeleted(i, i);
+    }
+    
+    public void updateData(int i, Pessoa pessoa) {
+        this.getData().remove(i);
+        this.getData().add(i, pessoa);
+        this.fireTableRowsDeleted(i, i);
+    }
+    
 }

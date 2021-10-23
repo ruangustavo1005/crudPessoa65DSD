@@ -4,58 +4,42 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import javax.swing.event.ListSelectionEvent;
 import message.DeleteMessageParser;
 import message.GetMessageParser;
 import message.ListMessageParser;
 import message.MessageParser;
+import model.Empresa;
 import model.Pessoa;
-import util.ConfigUtils;
 import util.Connection;
+import util.DateUtils;
 import util.MessageDialog;
 import util.Response;
-import view.ViewIndex;
+import view.ViewGridEmpresa;
 
 /**
  * @author Ruan
  */
-public class ControllerIndex extends Controller {
+public class ControllerGridEmpresa extends Controller {
 
-    private ViewIndex view;
-
-    public ControllerIndex() {
-        this(null);
-    }
+    private ViewGridEmpresa view;
     
-    public ControllerIndex(Controller caller) {
+    public ControllerGridEmpresa(Controller caller) {
         super(caller);
-        this.view = new ViewIndex();
+        this.view = new ViewGridEmpresa();
         this.addActionListeners();
         this.addTableListeners();
         this.onSelectRow();
     }
     
     public void abreTela() {
-        this.setIPPortFromConfig();
         this.getView().setVisible(true);
     }
 
-    private void setIPPortFromConfig() {
-        try {
-            String config = ConfigUtils.getConfig();
-            
-            if (config != null && !config.isEmpty()) {
-                String[] configs = config.split(":");
-                this.getView().getFieldIP().setText(configs[0]);
-                this.getView().getFieldPort().setText(configs[1]);
-            }
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this.getView(), "Não foi possível ler o arquivo de configurações", "Erro", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    
-    public ViewIndex getView() {
+    public ViewGridEmpresa getView() {
         return view;
     }
     
@@ -65,9 +49,6 @@ public class ControllerIndex extends Controller {
         this.addActionListenerDelete();
         this.addActionListenerGet();
         this.addActionListenerList();
-        this.addActionListenerSaveIP();
-        this.addActionListenerTestConnection();
-        this.addActionListenerGerenciarEmpresas();
     }
     
     private void addTableListeners() {
@@ -85,36 +66,36 @@ public class ControllerIndex extends Controller {
     
     private void addActionListenerInsert() {
         this.getView().getButtonInsert().addActionListener((ActionEvent actionEvent) -> {
-            (new ControllerFormPessoa(this)).abreTela();
+            (new ControllerFormEmpresa(this)).abreTela();
         });
     }
     
     private void addActionListenerUpdate() {
         this.getView().getButtonUpdate().addActionListener((ActionEvent actionEvent) -> {
-            (new ControllerFormPessoa(this, this.getSelectedModel())).abreTela();
+            (new ControllerFormEmpresa(this, this.getSelectedModel())).abreTela();
         });
     }
     
     private void addActionListenerDelete() {
         this.getView().getButtonDelete().addActionListener((ActionEvent actionEvent) -> {
-            Pessoa pessoa = this.getSelectedModel();
+            Empresa empresa = this.getSelectedModel();
             
             Response retorno = this.delete();
             
             MessageDialog.show(this.getView(), retorno);
             
             if (retorno.isSuccess()) {
-                this.getView().getTableModelPessoa().deleteData(pessoa);
+                this.getView().getTableModelEmpresa().deleteData(empresa);
             }
         });
     }
     
     private void addActionListenerGet() {
         this.getView().getButtonGet().addActionListener((ActionEvent actionEvent) -> {
-            Response<Pessoa> retorno = this.get();
+            Response<Empresa> retorno = this.get();
             
             if (retorno.isSuccess()) {
-                (new ControllerFormPessoa(this, retorno.getTransmissible(), true)).abreTela();
+                (new ControllerFormEmpresa(this, retorno.getTransmissible(), true)).abreTela();
             }
             else {
                 MessageDialog.show(this.getView(), retorno);
@@ -124,13 +105,13 @@ public class ControllerIndex extends Controller {
     
     private void addActionListenerList() {
         this.getView().getButtonList().addActionListener((ActionEvent actionEvent) -> {
-            Response<Pessoa> retorno = ControllerIndex.list();
+            Response<Empresa> retorno = this.list();
             
             if (retorno.isSuccess()) {
-                this.getView().getTableModelPessoa().clearData();
+                this.getView().getTableModelEmpresa().clearData();
                 
-                for (Pessoa pessoa : retorno.getTransmissibles()) {
-                    this.getView().getTableModelPessoa().addData(pessoa);
+                for (Empresa empresa : retorno.getTransmissibles()) {
+                    this.getView().getTableModelEmpresa().addData(empresa);
                 }
             }
             else {
@@ -139,42 +120,10 @@ public class ControllerIndex extends Controller {
         });
     }
     
-    private void addActionListenerSaveIP() {
-        this.getView().getButtonSaveIP().addActionListener((ActionEvent actionEvent) -> {
-            try {
-                String ip = this.getView().getFieldIP().getText();
-                String port = this.getView().getFieldPort().getText();
-                
-                ConfigUtils.setConfig(ip.concat(":").concat(port));
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this.getView(), "Não foi possível ler o arquivo de configurações", "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-    }
-    
-    private void addActionListenerTestConnection() {
-        this.getView().getButtonTestConnection().addActionListener((ActionEvent actionEvent) -> {
-            int timeout = 5000;
-            try {
-                try (Socket socket = (new Connection(timeout)).getInstanceSocket()) {
-                    JOptionPane.showMessageDialog(this.getView(), "Conexão OK", "Info", JOptionPane.INFORMATION_MESSAGE);
-                }
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this.getView(), "Conexão recusada (expirado tempo de espera de " + timeout + " milissegundo(s))", "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-    }
-
-    private void addActionListenerGerenciarEmpresas() {
-        this.getView().getButtonGerenciarEmpresas().addActionListener((ActionEvent actionEvent) -> {
-            (new ControllerGridEmpresa(this)).abreTela();
-        });
-    }
-    
-    private Pessoa getSelectedModel() {
-        Pessoa retorno = null;
+    private Empresa getSelectedModel() {
+        Empresa retorno = null;
         if (this.getView().getTable().getSelectedRowCount() == 1) {
-            retorno = this.getView().getTableModelPessoa().getData().get(this.getView().getTable().getSelectedRow());
+            retorno = this.getView().getTableModelEmpresa().getData().get(this.getView().getTable().getSelectedRow());
         }
         return retorno;
     }
@@ -184,7 +133,7 @@ public class ControllerIndex extends Controller {
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
-            MessageParser<Pessoa> messageParser = new DeleteMessageParser<>(this.getSelectedModel());
+            MessageParser<Empresa> messageParser = new DeleteMessageParser<>(this.getSelectedModel());
             socket.getOutputStream().write(messageParser.getMessageBytes());
             
             InputStream inputStream = socket.getInputStream();
@@ -197,22 +146,35 @@ public class ControllerIndex extends Controller {
         return retorno;
     }
     
-    private Response<Pessoa> get() {
-        Response<Pessoa> retorno;
+    private Response<Empresa> get() {
+        Response<Empresa> retorno;
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
-            MessageParser<Pessoa> messageParser = new GetMessageParser<>(this.getSelectedModel());
+            MessageParser<Empresa> messageParser = new GetMessageParser<>(this.getSelectedModel());
             socket.getOutputStream().write(messageParser.getMessageBytes());
             
             InputStream inputStream = socket.getInputStream();
             byte[] dadosBrutos = new byte[1024];
             String response = new String(dadosBrutos, 0, inputStream.read(dadosBrutos));
-            retorno = new Response(response.split(";").length == 3, response);
-            if (retorno.isSuccess()) {
-                String[] dados = retorno.getMessage().split(";");
-                retorno.setTransmissible(new Pessoa(dados[0], dados[1], dados[2]));
+            retorno = new Response(response.split(";").length == 4, response);
+            
+            String[] dados = retorno.getMessage().split(";");
+            Empresa empresa = new Empresa(dados[0], dados[1], DateUtils.stringToDate(dados[2]));
+
+            if (dados.length == 4) {
+                ArrayList<String> cpfPessoasRelacionadas = new ArrayList<>(Arrays.asList(dados[3].split(",")));
+                for (Pessoa pessoa : ControllerIndex.list().getTransmissibles()) {
+                    if (cpfPessoasRelacionadas.contains(pessoa.getCpf())) {
+                        empresa.addPessoa(pessoa);
+                        cpfPessoasRelacionadas.remove(pessoa.getCpf());
+                        if (cpfPessoasRelacionadas.size() <= 0) {
+                            break;
+                        }
+                    }
+                }
             }
+            retorno.setTransmissible(empresa);
         }
         catch (IOException ex) {
             retorno = new Response(false, "Houve um erro ao tentar conectar com o servidor");
@@ -220,12 +182,12 @@ public class ControllerIndex extends Controller {
         return retorno;
     }
     
-    public static Response<Pessoa> list() {
-        Response<Pessoa> retorno;
+    private Response<Empresa> list() {
+        Response<Empresa> retorno;
         try {
             Socket socket = (new Connection()).getInstanceSocket();
             
-            MessageParser<Pessoa> messageParser = new ListMessageParser<>(Pessoa.class);
+            MessageParser<Empresa> messageParser = new ListMessageParser<>(Empresa.class);
             socket.getOutputStream().write(messageParser.getMessageBytes());
             
             InputStream inputStream = socket.getInputStream();
@@ -240,13 +202,25 @@ public class ControllerIndex extends Controller {
             
             retorno = new Response(true, dados);
             
+            ArrayList<Pessoa> allPessoas = ControllerIndex.list().getTransmissibles();
             String[] lines = retorno.getMessage().split("\n");
-
+            
             int quantidade = Integer.valueOf(lines[0]);
             if (quantidade > 0) {
                 for (int i = 1; i < lines.length; i++) {
-                    String[] dadosPessoa = lines[i].split(";");
-                    retorno.addTransmissible(new Pessoa(dadosPessoa[0], dadosPessoa[1], dadosPessoa[2]));
+                    String[] dadosEmpresa = lines[i].split(";");
+                    
+                    Empresa empresa = new Empresa(dadosEmpresa[0], dadosEmpresa[1], DateUtils.stringToDate(dadosEmpresa[2]));
+                    retorno.addTransmissible(empresa);
+                    
+                    if (dadosEmpresa.length == 4) {
+                        ArrayList<String> cpfPessoasRelacionadas = new ArrayList<>(Arrays.asList(dadosEmpresa[3].split(",")));
+                        for (Pessoa pessoa : allPessoas) {
+                            if (cpfPessoasRelacionadas.contains(pessoa.getCpf())) {
+                                empresa.addPessoa(pessoa);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -257,5 +231,5 @@ public class ControllerIndex extends Controller {
         }
         return retorno;
     }
-    
+
 }

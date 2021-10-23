@@ -34,6 +34,7 @@ public class ViewIndex extends javax.swing.JFrame {
         buttonDelete = new javax.swing.JButton();
         buttonGet = new javax.swing.JButton();
         buttonList = new javax.swing.JButton();
+        buttonGerenciarEmpresas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gerenciador de Pessoas");
@@ -59,7 +60,9 @@ public class ViewIndex extends javax.swing.JFrame {
 
         buttonGet.setText("Visualizar");
 
-        buttonList.setText("Atualizar Consulta");
+        buttonList.setText("Consultar");
+
+        buttonGerenciarEmpresas.setText("Gerenciar Empresas");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -77,8 +80,14 @@ public class ViewIndex extends javax.swing.JFrame {
                 .addComponent(buttonGet)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonList)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buttonGerenciarEmpresas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(buttonSaveIP)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonTestConnection))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -89,11 +98,7 @@ public class ViewIndex extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(fieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(buttonSaveIP)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buttonTestConnection)))
+                            .addComponent(fieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -116,7 +121,8 @@ public class ViewIndex extends javax.swing.JFrame {
                     .addComponent(buttonUpdate)
                     .addComponent(buttonDelete)
                     .addComponent(buttonGet)
-                    .addComponent(buttonList))
+                    .addComponent(buttonList)
+                    .addComponent(buttonGerenciarEmpresas))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE))
         );
@@ -161,6 +167,10 @@ public class ViewIndex extends javax.swing.JFrame {
         return buttonUpdate;
     }
 
+    public JButton getButtonGerenciarEmpresas() {
+        return buttonGerenciarEmpresas;
+    }
+
     public JTextField getFieldIP() {
         return fieldIP;
     }
@@ -171,6 +181,7 @@ public class ViewIndex extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonDelete;
+    private javax.swing.JButton buttonGerenciarEmpresas;
     private javax.swing.JButton buttonGet;
     private javax.swing.JButton buttonInsert;
     private javax.swing.JButton buttonList;
