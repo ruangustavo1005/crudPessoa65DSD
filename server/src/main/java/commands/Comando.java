@@ -1,6 +1,4 @@
-package model;
-
-import java.util.ArrayList;
+package commands;
 
 abstract public class Comando {
     
@@ -10,17 +8,11 @@ abstract public class Comando {
     public static final String UPDATE = "UPDATE";
     public static final String LIST = "LIST";
     
-    protected ArrayList<Pessoa> pessoas;
-    
     protected boolean success;
     
-    public Comando() {
-        this.pessoas = new ArrayList<>();
-    }
+    public abstract void execute(String[] args);
     
-    protected abstract void execute(Pessoa pessoa);
-    
-    protected abstract String returnMessage();
+    public abstract String returnMessage();
 
     public void setSuccess(boolean success) {
         this.success = success;

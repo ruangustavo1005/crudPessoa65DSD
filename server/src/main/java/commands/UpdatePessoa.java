@@ -1,15 +1,18 @@
-package model;
+package commands;
 
-public class Update extends Comando {
+import model.Dao;
+import model.Pessoa;
+
+public class UpdatePessoa extends Comando {
 
     @Override
-    protected void execute(Pessoa pessoa) {
+    public void execute(String[] args) {
         boolean achou = false;
         for(Pessoa p : Dao.getInstance().getPessoas()) {
-            if(p.getCpf().equals(pessoa.getCpf())) {
+            if(p.getCpf().equals(args[2])) {
                 achou = true;
-                p.setNome(pessoa.getNome());
-                p.setEndereco(pessoa.getEndereco());
+                p.setNome(args[3]);
+                p.setEndereco(args[4]);
                 this.setSuccess(true);
             }
         }
@@ -19,7 +22,7 @@ public class Update extends Comando {
     }
 
     @Override
-    protected String returnMessage() {
+    public String returnMessage() {
         if(this.success) {
             return "Pessoa atualizada com sucesso";
         } 

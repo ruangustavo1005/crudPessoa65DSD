@@ -36,8 +36,6 @@
                           <Component id="txtPort" min="-2" pref="77" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                           <Component id="btnStart" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="btnStop" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -53,7 +51,6 @@
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtPort" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnStart" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnStop" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="218" max="-2" attributes="0"/>
@@ -75,11 +72,6 @@
     <Component class="javax.swing.JButton" name="btnStart">
       <Properties>
         <Property name="text" type="java.lang.String" value="Start"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnStop">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Stop"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">

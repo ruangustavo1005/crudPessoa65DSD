@@ -1,6 +1,6 @@
 package model;
 
-public class Pessoa {
+public class Pessoa extends Model {
     
     private String nome;
     private String cpf;

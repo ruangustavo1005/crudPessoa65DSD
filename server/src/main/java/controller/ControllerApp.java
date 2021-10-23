@@ -26,7 +26,6 @@ public class ControllerApp {
     
     private void addActionListeners() {
         this.addActionStart();
-        this.addActionStop();
         this.addActionClearLogs();
     }
     
@@ -35,17 +34,12 @@ public class ControllerApp {
             int port = Integer.parseInt(this.getInstanceView().getPortValue());
             try {
                 this.server.initConnection(port);
+                this.getInstanceView().getStartButton().setEnabled(false);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this.getInstanceView(), ex.getMessage());
             } catch (Exception ex) {
                 Logger.getLogger(TelaServer.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });
-    }
-    
-    private void addActionStop() {
-        this.getInstanceView().getStopButton().addActionListener((e) -> {
-            this.server.interrupt();
         });
     }
     
