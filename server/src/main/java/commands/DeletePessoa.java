@@ -19,11 +19,11 @@ public class DeletePessoa extends Comando {
 
     @Override
     public String returnMessage() {
-        if(Dao.getInstance().getPessoas().isEmpty()) {
-            return "Sem pessoas cadastradas";
-        }
         if(this.success) {
             return "Pessoa removida com sucesso";
+        }
+        if(Dao.getInstance().getPessoas().isEmpty()) {
+            return "Sem pessoas cadastradas";
         }
         return "Pessoa não encontrada";
     }

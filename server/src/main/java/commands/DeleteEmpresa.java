@@ -19,11 +19,11 @@ public class DeleteEmpresa extends Comando {
 
     @Override
     public String returnMessage() {
-        if(Dao.getInstance().getEmpresas().isEmpty()) {
-            return "Sem empresas cadastradas";
-        }
         if(this.success) {
             return "Empresa removida com sucesso";
+        }
+        if(Dao.getInstance().getEmpresas().isEmpty()) {
+            return "Sem empresas cadastradas";
         }
         return "Empresa não encontrada";
     }
