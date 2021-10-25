@@ -1,18 +1,11 @@
 package model;
 
+import commands.Comando;
+
 public class FactoryComando {
     
-    public Comando getComando(String comando) throws Exception {
-        switch(comando) {
-            case Comando.INSERT:
-                return new Insert();
-            case Comando.DELETE: 
-                return new Delete();
-            case Comando.UPDATE:
-                return new Update();
-            default: 
-                throw new Exception("Comando não identificado.");
-        }
+    public Comando getComando(String classe, String acao) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return (Comando) Class.forName("commands." + acao.substring(0, 1).toUpperCase() + acao.substring(1).toLowerCase() + classe).newInstance();
     }
     
 }

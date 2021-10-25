@@ -7,11 +7,11 @@ public class Dao {
     private static Dao instance;
     
     protected ArrayList<Pessoa> pessoas;
+    protected ArrayList<Empresa> empresas;
     
     public Dao() {
         this.pessoas = new ArrayList<>();
-        this.pessoas.add(new Pessoa("teste", "123", "casa"));
-        this.pessoas.add(new Pessoa("testa", "456", "casa 2"));
+        this.empresas = new ArrayList<>();
     }
 
     public static Dao getInstance() {
@@ -23,6 +23,10 @@ public class Dao {
 
     public ArrayList<Pessoa> getPessoas() {
         return pessoas;
+    }
+    
+    public ArrayList<Empresa> getEmpresas() {
+        return empresas;
     }
     
 }

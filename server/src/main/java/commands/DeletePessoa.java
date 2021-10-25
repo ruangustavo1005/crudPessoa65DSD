@@ -1,12 +1,15 @@
-package model;
+package commands;
 
-public class Delete extends Comando {
+import model.Dao;
+import model.Pessoa;
+
+public class DeletePessoa extends Comando {
 
     @Override
-    protected void execute(Pessoa pessoa) {
+    public void execute(String[] args) {
         this.success = false;
         for(Pessoa p : Dao.getInstance().getPessoas()) {
-            if(pessoa.getCpf().equals(p.getCpf())) {
+            if(args[2].equals(p.getCpf())) {
                 this.success = true;
                 Dao.getInstance().getPessoas().remove(p);
                 break;
@@ -15,7 +18,7 @@ public class Delete extends Comando {
     }
 
     @Override
-    protected String returnMessage() {
+    public String returnMessage() {
         if(Dao.getInstance().getPessoas().isEmpty()) {
             return "Sem pessoas cadastradas";
         }
